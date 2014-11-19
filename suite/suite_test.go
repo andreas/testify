@@ -2,10 +2,11 @@ package suite
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // This suite is intended to store values to make sure that only
@@ -69,6 +70,11 @@ func (suite *SuiteTester) TestTwo() {
 	suite.NotEqual(suite.TestTwoRunCount, beforeCount)
 }
 
+// TestThree panics, but TearDownTest and TearDownSuite is still run
+func (suite *SuiteTester) TestThree() {
+	panic(nil)
+}
+
 // NonTestMethod does not begin with "Test", so it will not be run by
 // testify as a test in the suite.  This is useful for creating helper
 // methods for your tests.
@@ -94,8 +100,8 @@ func TestRunSuite(t *testing.T) {
 	// There are two test methods (TestOne and TestTwo), so the
 	// SetupTest and TearDownTest methods (which should be run once for
 	// each test) should have been run twice.
-	assert.Equal(t, suiteTester.SetupTestRunCount, 2)
-	assert.Equal(t, suiteTester.TearDownTestRunCount, 2)
+	assert.Equal(t, suiteTester.SetupTestRunCount, 3)
+	assert.Equal(t, suiteTester.TearDownTestRunCount, 3)
 
 	// Each test should have been run once.
 	assert.Equal(t, suiteTester.TestOneRunCount, 1)
